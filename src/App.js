@@ -6,15 +6,14 @@ const initialItems = [
 ]
 
 export default function App() {
-  
-  const [valueFromChild, setValueFromChild] = useState('')
-  initialItems.push(valueFromChild)
+
+  const [listOfItems, setListOfItems] = useState([])
 
   return( 
     <div className="app">
       <Logo/>
-      <From setValueFromChild={setValueFromChild} />
-      <PackingList />
+      <From setListOfItems={setListOfItems} />
+      <PackingList listOfItems={listOfItems}  />
       <States/>
     </div>
   )
@@ -26,14 +25,27 @@ function Logo() {
   )
 }
 
-function From({setValueFromChild}) {
+function From({setListOfItems}) {
 
   const [textInput, setTextInput] = useState('');
-  const [optionNum, setOptionNum] = useState('');
+  const [optionNum, setOptionNum] = useState(1);
+  const [items, setItmes] = useState([])
+
+  function sendToParant() {  
+    setListOfItems((i)=> [...i, items])
+  }
+
+  function addItems(newItem) {
+    setItmes((items) => [...items, newItem])
+    sendToParant(items)
+  }
 
   function handleSumbit(e) {
     e.preventDefault()
-    setValueFromChild({id: 4, description: textInput, quantity: optionNum, packed: false})
+
+    if(!textInput) return
+    const newItem = {id: 6, textInput, optionNum, packed: false}
+    addItems(newItem)
   }
 
   return(
@@ -61,30 +73,32 @@ function From({setValueFromChild}) {
   )
 }
 
-function PackingList() {
-  return(
-    <div className="list" >
-      <ul> 
-      { initialItems.length < 0 ?'mt list': initialItems.map(el => {
-          return(
-            <li key={el.id}  >
-              <input type="checkbox" />
-              <p className={el.packed? 'checked': '' }>{el.quantity }{" "}{el.description}</p>
-              <button>❌</button>
-            </li>
-          )
-        })
-      }
-      </ul>
+function PackingList({listOfItems}) {
+  console.log(listOfItems)
+
+  // return(
+  //   <div className="list" >
+  //     <ul> 
+  //     { listOfItems.length < 0 ?'mt list': listOfItems.map(el => {
+  //         return(
+  //           <li key={el.id}  >
+  //             <input type="checkbox" />
+  //             <p className={el.packed? 'checked': '' }>{el.quantity }{" "}{el.description}</p>
+  //             <button>❌</button>
+  //           </li>
+  //         )
+  //       })
+  //     }
+  //     </ul>
       
-      <div className="actions" >
-        <select>
-          <option>sort by input order</option>
-        </select>
-        <button>clear list</button>
-      </div>
-    </div>
-  )
+  //     <div className="actions" >
+  //       <select>
+  //         <option>sort by input order</option>
+  //       </select>
+  //       <button>clear list</button>
+  //     </div>
+  //   </div>
+  // )
 }
 
 function States() {
